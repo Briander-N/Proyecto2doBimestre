@@ -1,18 +1,3 @@
-/*#include "mainwindow.h"
-#include "./ui_mainwindow.h"
-
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
-{
-    ui->setupUi(this);
-}
-
-MainWindow::~MainWindow()
-{
-    delete ui;
-}
-*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -28,6 +13,7 @@ struct Juego{
 
 void registrarJuego(vector<Juego>& juegos){
 	Juego nuevo;
+	cin.ignore();
 	cout<<"\nNombre: ";
 	getline(cin, nuevo.nombre);
 	cout<<"Categoria: ";
@@ -40,7 +26,23 @@ void registrarJuego(vector<Juego>& juegos){
 	cin>>nuevo.anioPublicacion;
 	cin.ignore();
 	juegos.push_back(nuevo);
-	cout<<"Juego registrado exitosamente\n";
+}
+
+void mostrarJuegos(const vector<Juego>& juegos){
+	if(juegos.empty()){
+		cout << "\nNo hay juegos registrados.\n";
+		return;
+	}
+
+	cout << "\n--- Lista de Juegos ---\n";
+	for(int i = 0; i < juegos.size(); i++){
+		cout << "Nombre: " << juegos[i].nombre << endl;
+		cout << "Categoria: " << juegos[i].categoria << endl;
+		cout << "Desarrollador: " << juegos[i].desarrollador << endl;
+		cout << "Precio: " << juegos[i].precio << endl;
+		cout << "Anio de publicacion: " << juegos[i].anioPublicacion << endl;
+		cout << "----------------------\n";
+	}
 }
 
 int main(){
@@ -49,6 +51,9 @@ int main(){
 	cout<<"---------------------------------\n";
 	cout<<"\n---Registrar Juego---\n";
 	registrarJuego(juegos);
+	cout <<"---Mostrar Juegos---\n";
+	mostrarJuegos(juegos);
 	
 	return 0;
 }
+
