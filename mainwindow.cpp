@@ -1,3 +1,19 @@
+/*#include "mainwindow.h"
+#include "./ui_mainwindow.h"
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+*/
+
 #include<iostream>
 #include<vector>
 #include<string>
@@ -13,19 +29,39 @@ struct Juego{
 
 void registrarJuego(vector<Juego>& juegos){
 	Juego nuevo;
-	cin.ignore();
-	cout<<"\nNombre: ";
-	getline(cin, nuevo.nombre);
+	
+	do{
+		cout<<"\nNombre: ";
+		getline(cin, nuevo.nombre);
+		if(nuevo.nombre.empty()){
+			cout<<"El nombre no puede estar vacio!!"<<endl;
+		}
+	}while(nuevo.nombre.empty());
+
 	cout<<"Categoria: ";
 	getline(cin, nuevo.categoria);
 	cout<<"Desarrollador: ";
 	getline(cin, nuevo.desarrollador);
-	cout<<"Precio: ";
-	cin>>nuevo.precio;
-	cout<<"Anio de publicacion: ";
-	cin>>nuevo.anioPublicacion;
+	
+	do{
+		cout<<"Precio: ";
+		cin>>nuevo.precio;
+		if(nuevo.precio < 0){
+			cout<<"Ingrese un valor valido!"<<endl;
+		}
+	}while(nuevo.precio < 0);
+	
+	do{
+		cout<<"Anio de publicacion: ";
+		cin>>nuevo.anioPublicacion;
+		if(nuevo.anioPublicacion < 1950 || nuevo.anioPublicacion > 2026){
+		    cout << "Ingresa un anio valido (1950 - 2026)"<<endl;
+		}
+	}while(nuevo.anioPublicacion < 1950 || nuevo.anioPublicacion > 2026);
+	
 	cin.ignore();
 	juegos.push_back(nuevo);
+	cout<<"Juego registrado exitosamente\n";
 }
 
 void mostrarJuegos(const vector<Juego>& juegos){
@@ -56,4 +92,3 @@ int main(){
 	
 	return 0;
 }
-
