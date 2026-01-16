@@ -17,9 +17,11 @@ MainWindow::~MainWindow()
 #include<iostream>
 #include<vector>
 #include<string>
+#include<fstream>
 using namespace std;
 
 struct Juego{
+	int id;
 	string nombre;
 	string categoria;
 	string desarrollador;
@@ -27,9 +29,65 @@ struct Juego{
 	int anioPublicacion;
 };
 
-void registrarJuego(vector<Juego>& juegos){
-	Juego nuevo;
+const string archivoJuegos = "juegosRegistro.txt";
+
+
+void guardarJuego(Juego& j) {
+    //Escribimos al final del archivo nuestro nuevo corredor
+    ofstream archivo(archivoJuegos, ios::app);
+    if (archivo.is_open()) {
+        archivo<<j.id<<";"
+        <<j.nombre<<";"
+        <<j.categoria<<";"
+        <<j.desarrollador<<";"
+        <<j.precio<<";"
+        <<j.anioPublicacion<<"\n";
+
+    }else {
+        cerr<<"No se pudo abrir el archivo para guardar\n";
+    }
+
+}
+
+vector<Juego> cargarJuegos(){
+	vector<Juego> juegos;
+	ifstream archivo(archivoJuegos);
+    if (archivo.is_open()) {
+        string linea;
+        while (getline(archivo,linea)) {
+            if (linea.empty()) {
+                continue;
+            }
+            vector<string> campos;
+            size_t pos = 0;
+            while ((pos = linea.find(";")) != string::npos) {
+                campos.push_back(linea.substr(0,pos));
+                linea.erase(0,pos+1);
+            }
+            campos.push_back(linea);
+            if (campos.size() == 6) {
+                Juego j;
+                j.id = stoi(campos[0]);
+                j.nombre = campos[1];
+                j.categoria = campos[2];
+                j.desarrollador = campos[3];
+                j.precio = stof(campos[4]);
+                j.anioPublicacion = stoi(campos[5]);
+                juegos.push_back(j);
+            }
+        }
+    }
+    return juegos;	
 	
+}
+
+
+void registrarJuego(){
+	Juego nuevo;
+	cout<<"Ingresa los datos de registro a continuacion"<<endl;
+	cout<<"ID: "<<endl;
+	cin>>nuevo.id;
+	cin.ignore();
 	do{
 		cout<<"\nNombre: ";
 		getline(cin, nuevo.nombre);
@@ -60,11 +118,13 @@ void registrarJuego(vector<Juego>& juegos){
 	}while(nuevo.anioPublicacion < 1950 || nuevo.anioPublicacion > 2026);
 	
 	cin.ignore();
-	juegos.push_back(nuevo);
+	guardarJuego(nuevo);
+	
 	cout<<"Juego registrado exitosamente\n";
 }
 
-void mostrarJuegos(const vector<Juego>& juegos){
+void mostrarJuegos(){
+    vector<Juego> juegos = cargarJuegos();
 	if(juegos.empty()){
 		cout << "\nNo hay juegos registrados.\n";
 		return;
@@ -72,6 +132,7 @@ void mostrarJuegos(const vector<Juego>& juegos){
 
 	cout << "\n--- Lista de Juegos ---\n";
 	for(int i = 0; i < juegos.size(); i++){
+		cout << "ID: " << juegos[i].id << endl;
 		cout << "Nombre: " << juegos[i].nombre << endl;
 		cout << "Categoria: " << juegos[i].categoria << endl;
 		cout << "Desarrollador: " << juegos[i].desarrollador << endl;
@@ -83,12 +144,38 @@ void mostrarJuegos(const vector<Juego>& juegos){
 
 int main(){
 	vector<Juego> juegos;
-	cout<<"===Gestion de Videojuegos de Steam===\n";
-	cout<<"---------------------------------\n";
-	cout<<"\n---Registrar Juego---\n";
-	registrarJuego(juegos);
-	cout <<"---Mostrar Juegos---\n";
-	mostrarJuegos(juegos);
-	
-	return 0;
+	int opcion;
+	do{
+		cout<<"===Gestion de Videojuegos de Steam===\n";
+		cout<<"1. Registrar Juego"<<endl;
+		cout<<"2. Ver juego"<<endl;
+		cout<<"3. Modificar juego"<<endl;
+		cout<<"4. Eliminar juego"<<endl;
+		cout<<"0. Salir"<<endl;
+		
+		cout<<"Ingresa una opcion: "<<endl;
+		cin>>opcion;
+		switch (opcion){
+			case 1:
+				registrarJuego();
+				break;
+			case 2:
+				mostrarJuegos();
+				break;
+			case 3:
+				
+				break;
+			case 4:
+				
+				break;
+
+			case 0:
+				cout<<"Saliendo..."<<endl;
+				break;
+			default:
+				cout<<"Opcion no valida";
+				break;
+		}
+    }while (opcion != 0);
+    return 0;
 }
