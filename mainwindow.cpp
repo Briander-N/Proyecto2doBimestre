@@ -33,7 +33,6 @@ const string archivoJuegos = "juegosRegistro.txt";
 
 
 void guardarJuego(Juego& j) {
-    //Escribimos al final del archivo nuestro nuevo corredor
     ofstream archivo(archivoJuegos, ios::app);
     if (archivo.is_open()) {
         archivo<<j.id<<";"
@@ -46,7 +45,23 @@ void guardarJuego(Juego& j) {
     }else {
         cerr<<"No se pudo abrir el archivo para guardar\n";
     }
+}
 
+void guardarTodosJuegos(vector<Juego>& juegos){
+	ofstream archivo(archivoJuegos);
+	if (archivo.is_open()){
+		for (int i=0; i<juegos.size(); i++){
+			archivo<<juegos[i].id<<";"
+			<<juegos[i].nombre<<";"
+			<<juegos[i].categoria<<";"
+            <<juegos[i].desarrollador<<";"
+			<<juegos[i].precio<<";"
+			<<juegos[i].anioPublicacion<<"\n";
+		}
+		archivo.close();
+	} else {
+		cerr<<"No se pudo abrir el archivo\n";
+	}
 }
 
 vector<Juego> cargarJuegos(){
@@ -78,14 +93,13 @@ vector<Juego> cargarJuegos(){
         }
     }
     return juegos;	
-	
 }
 
 
 void registrarJuego(){
 	Juego nuevo;
 	cout<<"Ingresa los datos de registro a continuacion"<<endl;
-	cout<<"ID: "<<endl;
+	cout<<"ID: ";
 	cin>>nuevo.id;
 	cin.ignore();
 	do{
@@ -102,7 +116,7 @@ void registrarJuego(){
 	getline(cin, nuevo.desarrollador);
 	
 	do{
-		cout<<"Precio: ";
+		cout<<"Precio: $";
 		cin>>nuevo.precio;
 		if(nuevo.precio < 0){
 			cout<<"Ingrese un valor valido!"<<endl;
@@ -136,9 +150,36 @@ void mostrarJuegos(){
 		cout << "Nombre: " << juegos[i].nombre << endl;
 		cout << "Categoria: " << juegos[i].categoria << endl;
 		cout << "Desarrollador: " << juegos[i].desarrollador << endl;
-		cout << "Precio: " << juegos[i].precio << endl;
+		cout << "Precio: $" << juegos[i].precio << endl;
 		cout << "Anio de publicacion: " << juegos[i].anioPublicacion << endl;
 		cout << "----------------------\n";
+	}
+}
+
+void eliminarJuego(){
+	vector<Juego> juegos = cargarJuegos();
+	if(juegos.empty()){
+		cout<<"\nNo hay juegos registrados.\n";
+		return;
+	}
+	cout<<"\n--- Eliminar Juego ---\n";
+	
+	int idBuscado;
+	cout<<"Ingrese el id del juego a eliminar: ";
+	cin>>idBuscado;
+	bool encontrado = false;
+	for (int i=0; i<juegos.size();i++){
+		if (juegos[i].id == idBuscado){
+			cout<<"Eliminando el juego : "<<juegos[i].nombre<<endl; 
+			encontrado = true;
+			juegos.erase(juegos.begin() + i);
+			guardarTodosJuegos(juegos);
+			cout<<"Juego eliminado correctamente"<<endl;
+			break;
+		}
+	}
+	if (!encontrado){
+		cout<<"No se encontro un juego con la ID ingresada"<<endl;
 	}
 }
 
@@ -148,12 +189,12 @@ int main(){
 	do{
 		cout<<"===Gestion de Videojuegos de Steam===\n";
 		cout<<"1. Registrar Juego"<<endl;
-		cout<<"2. Ver juego"<<endl;
+		cout<<"2. Ver juegos"<<endl;
 		cout<<"3. Modificar juego"<<endl;
 		cout<<"4. Eliminar juego"<<endl;
 		cout<<"0. Salir"<<endl;
 		
-		cout<<"Ingresa una opcion: "<<endl;
+		cout<<"Ingresa una opcion: ";
 		cin>>opcion;
 		switch (opcion){
 			case 1:
@@ -166,9 +207,8 @@ int main(){
 				
 				break;
 			case 4:
-				
+				eliminarJuego();
 				break;
-
 			case 0:
 				cout<<"Saliendo..."<<endl;
 				break;
@@ -179,3 +219,4 @@ int main(){
     }while (opcion != 0);
     return 0;
 }
+
