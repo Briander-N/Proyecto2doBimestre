@@ -27,7 +27,7 @@
      <string>Nombre:</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit">
+   <widget class="QLineEdit" name="lnENombre">
     <property name="geometry">
      <rect>
       <x>240</x>
@@ -50,7 +50,7 @@
      <string>Categoria:</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit_2">
+   <widget class="QLineEdit" name="lnECategoria">
     <property name="geometry">
      <rect>
       <x>470</x>
@@ -73,7 +73,7 @@
      <string>Desarrollador:</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit_3">
+   <widget class="QLineEdit" name="lnEDesarrollador">
     <property name="geometry">
      <rect>
       <x>240</x>
@@ -96,7 +96,7 @@
      <string>Precio:</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit_4">
+   <widget class="QLineEdit" name="lnEPrecio">
     <property name="geometry">
      <rect>
       <x>470</x>
@@ -117,16 +117,6 @@
     </property>
     <property name="text">
      <string>Publicacion:</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit_5">
-    <property name="geometry">
-     <rect>
-      <x>370</x>
-      <y>120</y>
-      <width>113</width>
-      <height>20</height>
-     </rect>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton">
@@ -179,6 +169,31 @@
     </property>
     <property name="text">
      <string>Eliminar Juego</string>
+    </property>
+   </widget>
+   <widget class="QDoubleSpinBox" name="dbBAnioPublicacion">
+    <property name="geometry">
+     <rect>
+      <x>370</x>
+      <y>120</y>
+      <width>62</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="decimals">
+     <number>0</number>
+    </property>
+    <property name="minimum">
+     <double>1950.000000000000000</double>
+    </property>
+    <property name="maximum">
+     <double>2026.000000000000000</double>
+    </property>
+    <property name="stepType">
+     <enum>QAbstractSpinBox::StepType::DefaultStepType</enum>
+    </property>
+    <property name="value">
+     <double>2026.000000000000000</double>
     </property>
    </widget>
   </widget>
