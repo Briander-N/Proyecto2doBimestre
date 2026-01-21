@@ -109,7 +109,7 @@
    <widget class="QLabel" name="label_5">
     <property name="geometry">
      <rect>
-      <x>290</x>
+      <x>280</x>
       <y>120</y>
       <width>81</width>
       <height>16</height>
@@ -119,12 +119,12 @@
      <string>Publicacion:</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="btnRegistrar">
     <property name="geometry">
      <rect>
       <x>130</x>
       <y>170</y>
-      <width>91</width>
+      <width>101</width>
       <height>24</height>
      </rect>
     </property>
@@ -132,7 +132,7 @@
      <string>Registrar Juego</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_2">
+   <widget class="QPushButton" name="btnVer">
     <property name="geometry">
      <rect>
       <x>260</x>
@@ -145,7 +145,7 @@
      <string>Ver Juegos</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_3">
+   <widget class="QPushButton" name="btnActualizar">
     <property name="geometry">
      <rect>
       <x>380</x>
@@ -158,7 +158,7 @@
      <string>Actualizar Juego</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_4">
+   <widget class="QPushButton" name="btnEliminar">
     <property name="geometry">
      <rect>
       <x>520</x>
@@ -176,7 +176,7 @@
      <rect>
       <x>370</x>
       <y>120</y>
-      <width>62</width>
+      <width>91</width>
       <height>25</height>
      </rect>
     </property>
@@ -194,6 +194,19 @@
     </property>
     <property name="value">
      <double>2026.000000000000000</double>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_6">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>10</y>
+      <width>221</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:700;&quot;&gt;Gestor de Juegos de Steam&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
   </widget>
