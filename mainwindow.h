@@ -22,6 +22,8 @@ public:
 private slots:
     void on_btnRegistrar_clicked();
 
+    void on_btnVer_clicked();
+
 private:
     Ui::MainWindow *ui;
     std::vector<Juego> juegos;
@@ -30,4 +32,3 @@ private:
     void limpiarCampos();
 };
 #endif // MAINWINDOW_H
-

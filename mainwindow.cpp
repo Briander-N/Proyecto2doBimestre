@@ -6,6 +6,8 @@
 #include <QHeaderView>
 #include <QInputDialog>
 #include <algorithm>
+#include <QTextStream>
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -24,19 +26,59 @@ MainWindow::~MainWindow()
 
 int MainWindow::generarNuevoID()
 {
-    if (juegos.empty()) {
-        return 1;
+    QFile file("juegosRegistro.txt");
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        return 1; // si no existe el archivo, empieza en 1
     }
-
+    QTextStream in(&file);
     int maxID = 0;
-    for (const auto& juego : juegos) {
-        if (juego.id > maxID) {
-            maxID = juego.id;
-        }
+    while (!in.atEnd()) {
+        QString linea = in.readLine();
+        QStringList campos = linea.split(";");
+        if (campos.size() < 1)
+            continue;
+        int id = campos[0].toInt();
+        if (id > maxID)
+            maxID = id;
     }
-
     return maxID + 1;
 }
+
+std::vector<Juego>cargarJuegos(){
+    std::vector<Juego> juegos;
+    QFile file("juegosRegistro.txt");
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text)){
+        QTextStream in(&file); //Permite leer y escribir archivos QString, QFile y asi pos...xd
+        while (!in.atEnd()) { //Esto lee hasta que se acabe el archivo
+            QString linea = in.readLine(); //Lee una linea del archivo, osea como en python masomenos
+            QStringList campos = linea.split(";"); //Es como un vector de QStrings
+
+
+
+            if (campos.size() != 6)
+                continue;
+
+            Juego juegocargar;
+            juegocargar.id = campos[0].toInt();
+            juegocargar.nombre = campos[1];
+            juegocargar.desarrollador = campos[2];
+            juegocargar.categoria = campos[3];
+            juegocargar.precio = campos[4].toDouble();
+            juegocargar.anioPublicacion = campos[5].toInt();
+
+            juegos.push_back(juegocargar);
+        }
+        return juegos;
+
+    }else{
+        QMessageBox::critical(nullptr, "Error", "No se pudo abrir el archivo"); //Se usa nullptr en lugar de this ya que es pura logica y no depende de la interfaz
+        return juegos;
+    }
+
+
+
+}
+
 
 bool MainWindow::validarCampos()
 {
@@ -106,300 +148,26 @@ void MainWindow::on_btnRegistrar_clicked()
 }
 
 
-/*
-#include<iostream>
-#include<vector>
-#include<string>
-#include<fstream>
-#include <locale>
-#include <windows.h>
-using namespace std;
+void MainWindow::on_btnVer_clicked()
+{
+    std::vector<Juego>juegos = cargarJuegos();
 
-struct Juego{
-	int id;
-	string nombre;
-	string categoria;
-	string desarrollador;
-	float precio;
-	int anioPublicacion;
-};
-
-const string archivoJuegos = "juegosRegistro.txt";
-
-
-void guardarJuego(Juego& j) {
-    ofstream archivo(archivoJuegos, ios::app);
-    if (archivo.is_open()) {
-        archivo<<j.id<<";"
-        <<j.nombre<<";"
-        <<j.categoria<<";"
-        <<j.desarrollador<<";"
-        <<j.precio<<";"
-        <<j.anioPublicacion<<"\n";
-
-    }else {
-        cerr<<"No se pudo abrir el archivo para guardar\n";
-    }
-}
-
-void guardarTodosJuegos(vector<Juego>& juegos){
-	ofstream archivo(archivoJuegos);
-	if (archivo.is_open()){
-		for (int i=0; i<juegos.size(); i++){
-			archivo<<juegos[i].id<<";"
-			<<juegos[i].nombre<<";"
-			<<juegos[i].categoria<<";"
-            <<juegos[i].desarrollador<<";"
-			<<juegos[i].precio<<";"
-			<<juegos[i].anioPublicacion<<"\n";
-		}
-		archivo.close();
-	} else {
-		cerr<<"No se pudo abrir el archivo\n";
-	}
-}
-
-vector<Juego> cargarJuegos(){
-	vector<Juego> juegos;
-	ifstream archivo(archivoJuegos);
-    if (archivo.is_open()) {
-        string linea;
-        while (getline(archivo,linea)) {
-            if (linea.empty()) {
-                continue;
-            }
-            vector<string> campos;
-            size_t pos = 0;
-            while ((pos = linea.find(";")) != string::npos) {
-                campos.push_back(linea.substr(0,pos));
-                linea.erase(0,pos+1);
-            }
-            campos.push_back(linea);
-            if (campos.size() == 6) {
-                Juego j;
-                j.id = stoi(campos[0]);
-                j.nombre = campos[1];
-                j.categoria = campos[2];
-                j.desarrollador = campos[3];
-                j.precio = stof(campos[4]);
-                j.anioPublicacion = stoi(campos[5]);
-                juegos.push_back(j);
-            }
-        }
-    }
-    return juegos;
-}
-
-
-void registrarJuego(){
-	SetConsoleOutputCP(65001);
-	SetConsoleCP(65001);
-	setlocale(LC_ALL, "");
-	Juego nuevo;
-	cout<<"Ingresa los datos de registro a continuación"<<endl;
-	cout<<"ID: ";
-	cin>>nuevo.id;
-	cin.ignore();
-	do{
-		cout<<"\nNombre: ";
-		getline(cin, nuevo.nombre);
-		if(nuevo.nombre.empty()){
-			cout<<"El nombre no puede estar vacío!!"<<endl;
-		}
-	}while(nuevo.nombre.empty());
-
-	cout<<"Categoría: ";
-	getline(cin, nuevo.categoria);
-	cout<<"Desarrollador: ";
-	getline(cin, nuevo.desarrollador);
-
-	do{
-		cout<<"Precio: $";
-		cin>>nuevo.precio;
-		if(nuevo.precio < 0){
-			cout<<"Ingrese un valor válido!"<<endl;
-		}
-	}while(nuevo.precio < 0);
-
-	do{
-		cout<<"Anio de publicación: ";
-		cin>>nuevo.anioPublicacion;
-		if(nuevo.anioPublicacion < 1997 || nuevo.anioPublicacion > 2026){
-		    cout << "Ingresa un anio válido (1997 - 2026)"<<endl;
-		}
-	}while(nuevo.anioPublicacion < 1997 || nuevo.anioPublicacion > 2026);
-
-	cin.ignore();
-	guardarJuego(nuevo);
-
-	cout<<"Juego registrado exitosamente\n";
-}
-
-void mostrarJuegos(){
-	SetConsoleOutputCP(65001);
-	SetConsoleCP(65001);
-	setlocale(LC_ALL, "");
-    vector<Juego> juegos = cargarJuegos();
-	if(juegos.empty()){
-		cout << "\nNo hay juegos registrados.\n";
-		return;
-	}
-
-	cout << "\n--- Lista de Juegos ---\n";
-	for(int i = 0; i < juegos.size(); i++){
-		cout << "ID: " << juegos[i].id << endl;
-		cout << "Nombre: " << juegos[i].nombre << endl;
-		cout << "Categoría: " << juegos[i].categoria << endl;
-		cout << "Desarrollador: " << juegos[i].desarrollador << endl;
-		cout << "Precio: $" << juegos[i].precio << endl;
-		cout << "Año de publicación: " << juegos[i].anioPublicacion << endl;
-		cout << "----------------------\n";
-	}
-}
-
-void modificarJuego(){
-	SetConsoleOutputCP(65001);
-	SetConsoleCP(65001);
-	setlocale(LC_ALL, "");
-    vector<Juego> juegos = cargarJuegos();
-
-    if(juegos.empty()){
-        cout << "\nNo hay juegos registrados.\n";
+    if (juegos.empty()){
+        QMessageBox::warning(this, "Error", "No hay juegos registrados!");
         return;
     }
-
-    int idBuscado;
-    cout << "\nIngrese el ID del juego a modificar: ";
-    cin >> idBuscado;
-    cin.ignore();
-
-    bool encontrado = false;
-
-    for(int i = 0; i < juegos.size(); i++){
-        if(juegos[i].id == idBuscado){
-            encontrado = true;
-
-            cout << "\nModificando juego\n";
-
-            do{
-                cout << "Nuevo nombre: ";
-                getline(cin, juegos[i].nombre);
-                if(juegos[i].nombre.empty()){
-                    cout << "El nombre no puede estar vacío.\n";
-                }
-            }while(juegos[i].nombre.empty());
-
-            do{
-                cout << "Nueva categoría: ";
-                getline(cin, juegos[i].categoria);
-                if(juegos[i].categoria.empty()){
-                    cout << "La categoría no puede estar vacía.\n";
-                }
-            }while(juegos[i].categoria.empty());
-
-            do{
-                cout << "Nuevo desarrollador: ";
-                getline(cin, juegos[i].desarrollador);
-                if(juegos[i].desarrollador.empty()){
-                    cout << "El desarrollador no puede estar vacío.\n";
-                }
-            }while(juegos[i].desarrollador.empty());
-
-            do{
-                cout << "Nuevo precio: $";
-                cin >> juegos[i].precio;
-                if(juegos[i].precio < 0){
-                    cout << "Ingrese un precio válido.\n";
-                }
-            }while(juegos[i].precio < 0);
-
-            do{
-                cout << "Nuevo año de publicación: ";
-                cin >> juegos[i].anioPublicacion;
-                if(juegos[i].anioPublicacion < 1950 || juegos[i].anioPublicacion > 2026){
-                    cout << "Ingrese un año válido (1950 - 2026).\n";
-                }
-            }while(juegos[i].anioPublicacion < 1950 || juegos[i].anioPublicacion > 2026);
-
-            guardarTodosJuegos(juegos);
-            cout << "\nJuego modificado correctamente.\n";
-            break;
-        }
+    ui->tableJuegos->setRowCount(0);
+    for(auto j : juegos){
+        int f = ui->tableJuegos->rowCount();
+        ui->tableJuegos->insertRow(f);
+        ui->tableJuegos->setItem(f, 0, new QTableWidgetItem(QString::number(j.id))); //Ya que no se aceptan int, solo strings, lo mismo para el resto de valores numericos
+        ui->tableJuegos->setItem(f, 1, new QTableWidgetItem(j.nombre));
+        ui->tableJuegos->setItem(f, 2, new QTableWidgetItem(j.desarrollador));
+        ui->tableJuegos->setItem(f, 3, new QTableWidgetItem(j.categoria));
+        ui->tableJuegos->setItem(f, 4, new QTableWidgetItem(QString::number(j.precio)));
+        ui->tableJuegos->setItem(f, 5, new QTableWidgetItem(QString::number(j.anioPublicacion)));
     }
 
-    if(!encontrado){
-        cout << "\nNo se encontró un juego con ese ID.\n";
-    }
+
 }
 
-
-void eliminarJuego(){
-	SetConsoleOutputCP(65001);
-	SetConsoleCP(65001);
-	setlocale(LC_ALL, "");
-	vector<Juego> juegos = cargarJuegos();
-	if(juegos.empty()){
-		cout<<"\nNo hay juegos registrados.\n";
-		return;
-	}
-	cout<<"\n--- Eliminar Juego ---\n";
-
-	int idBuscado;
-	cout<<"Ingrese el id del juego a eliminar: ";
-	cin>>idBuscado;
-	bool encontrado = false;
-	for (int i=0; i<juegos.size();i++){
-		if (juegos[i].id == idBuscado){
-			cout<<"Eliminando el juego : "<<juegos[i].nombre<<endl;
-			encontrado = true;
-			juegos.erase(juegos.begin() + i);
-			guardarTodosJuegos(juegos);
-			cout<<"Juego eliminado correctamente"<<endl;
-			break;
-		}
-	}
-	if (!encontrado){
-		cout<<"No se encontró un juego con la ID ingresada"<<endl;
-	}
-}
-
-int main(){
-	SetConsoleOutputCP(65001);
-	SetConsoleCP(65001);
-	setlocale(LC_ALL, "");
-	vector<Juego> juegos;
-	int opcion;
-	do{
-		cout<<"===Gestión de Videojuegos de Steam===\n";
-		cout<<"1. Registrar Juego"<<endl;
-		cout<<"2. Ver juegos"<<endl;
-		cout<<"3. Modificar juego"<<endl;
-		cout<<"4. Eliminar juego"<<endl;
-		cout<<"0. Salir"<<endl;
-
-		cout<<"Ingresa una opcion: ";
-		cin>>opcion;
-		switch (opcion){
-			case 1:
-				registrarJuego();
-				break;
-			case 2:
-				mostrarJuegos();
-				break;
-			case 3:
-				modificarJuego();
-				break;
-			case 4:
-				eliminarJuego();
-				break;
-			case 0:
-				cout<<"Saliendo..."<<endl;
-				break;
-			default:
-				cout<<"Opción no valida";
-				break;
-		}
-    }while (opcion != 0);
-    return 0;
-}
-*/
