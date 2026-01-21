@@ -87,9 +87,19 @@ bool MainWindow::validarCampos()
         ui->lnENombre->setFocus();
         return false;
     }
+    if (ui->lnEDesarrollador->text().isEmpty()) {
+        QMessageBox::warning(this, "Error", "El Desarrollador no puede estar vacío");
+        ui->lnEDesarrollador->setFocus();
+        return false;
+    }
+    if (ui->lnECategoria->text().isEmpty()) {
+        QMessageBox::warning(this, "Error", "La categoría no puede estar vacía");
+        ui->lnECategoria->setFocus();
+        return false;
+    }
 
-    if (ui->lnEPrecio->text().toFloat() < 0) {
-        QMessageBox::warning(this, "Error", "El precio no puede ser negativo");
+    if (ui->lnEPrecio->text().toFloat() < 0 || ui->lnEPrecio->text().isEmpty()) {
+        QMessageBox::warning(this, "Error", "El precio no puede ser negativo o estar vacío");
         ui->lnEPrecio->setFocus();
         return false;
     }
@@ -169,5 +179,71 @@ void MainWindow::on_btnVer_clicked()
     }
 
 
+}
+
+
+void MainWindow::on_btnActualizar_clicked()
+{
+    bool ok;
+    int idBuscado = QInputDialog::getInt(//Este genera el cuadro donde se puede ingresar el id
+        this,//con esto lo ligamos al ui principal
+        "Actualizar juego",
+        "Ingrese el ID del juego a actualizar:",
+        1,//Valor por defecto que aparece en el cudro
+        1,//Valor minimo que se pude ingresar
+        1000,//Valor maximo que se puede ingresar
+        1,//Valor de saltos que va a dar
+        &ok
+        );
+
+    if (!ok) {
+        return;
+    }
+
+    std::vector<Juego> juegos = cargarJuegos();
+    bool encontrado = false;
+
+    for (auto &j : juegos) {
+        if (j.id == idBuscado) {
+
+            if (!validarCampos()) {
+                return;
+            }
+
+            j.nombre = ui->lnENombre->text();
+            j.categoria = ui->lnECategoria->text();
+            j.desarrollador = ui->lnEDesarrollador->text();
+            j.precio = ui->lnEPrecio->text().toFloat();
+            j.anioPublicacion = ui->dbBAnioPublicacion->value();
+
+            encontrado = true;
+            break;
+        }
+    }
+
+    if (!encontrado) {
+        QMessageBox::warning(this, "Error", "No se encontró un juego con ese ID");
+        return;
+    }
+
+    QFile file("juegosRegistro.txt");
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        QMessageBox::critical(this, "Error", "No se pudo abrir el archivo para actualizar");
+        return;
+    }
+
+    QTextStream out(&file);
+    for (const auto &j : juegos) {
+        out << j.id << ";"
+            << j.nombre << ";"
+            << j.categoria << ";"
+            << j.desarrollador << ";"
+            << QString::number(j.precio, 'f', 2) << ";"
+            << j.anioPublicacion << "\n";
+    }
+
+    file.close();
+    limpiarCampos();
+    QMessageBox::information(this, "Éxito", "Juego actualizado correctamente");
 }
 
