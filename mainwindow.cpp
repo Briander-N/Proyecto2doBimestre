@@ -1,19 +1,112 @@
-/*#include "mainwindow.h"
+#include "mainwindow.h"
 #include "./ui_mainwindow.h"
+#include "Juego.h"
+#include <QMessageBox>
+#include <QFile>
+#include <QHeaderView>
+#include <QInputDialog>
+#include <algorithm>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    ui->dbBAnioPublicacion->setMinimum(1997);
+    ui->dbBAnioPublicacion->setMaximum(2026);
+    ui->dbBAnioPublicacion->setValue(2024);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
-*/
 
+int MainWindow::generarNuevoID()
+{
+    if (juegos.empty()) {
+        return 1;
+    }
+
+    int maxID = 0;
+    for (const auto& juego : juegos) {
+        if (juego.id > maxID) {
+            maxID = juego.id;
+        }
+    }
+
+    return maxID + 1;
+}
+
+bool MainWindow::validarCampos()
+{
+    if (ui->lnENombre->text().isEmpty()) {
+        QMessageBox::warning(this, "Error", "El nombre no puede estar vacío");
+        ui->lnENombre->setFocus();
+        return false;
+    }
+
+    if (ui->lnEPrecio->text().toFloat() < 0) {
+        QMessageBox::warning(this, "Error", "El precio no puede ser negativo");
+        ui->lnEPrecio->setFocus();
+        return false;
+    }
+
+    if (ui->dbBAnioPublicacion->value() < 1997 || ui->dbBAnioPublicacion->value() > 2026) {
+        QMessageBox::warning(this, "Error", "El año debe estar entre 1997 y 2026");
+        ui->dbBAnioPublicacion->setFocus();
+        return false;
+    }
+
+    return true;
+}
+
+void MainWindow::limpiarCampos()
+{
+    ui->lnENombre->clear();
+    ui->lnECategoria->clear();
+    ui->lnEDesarrollador->clear();
+    ui->lnEPrecio->clear();
+    ui->dbBAnioPublicacion->setValue(2024);
+    ui->lnENombre->setFocus();
+}
+
+void MainWindow::on_btnRegistrar_clicked()
+{
+    if (!validarCampos()) {
+        return;
+    }
+
+    Juego nuevo;
+    nuevo.id = generarNuevoID();
+    nuevo.nombre = ui->lnENombre->text();
+    nuevo.categoria = ui->lnECategoria->text();
+    nuevo.desarrollador = ui->lnEDesarrollador->text();
+    nuevo.precio = ui->lnEPrecio->text().toFloat();
+    nuevo.anioPublicacion = ui->dbBAnioPublicacion->value();
+
+    juegos.push_back(nuevo);
+
+    QFile file("juegosRegistro.txt");
+    if (file.open(QIODevice::Append | QIODevice::Text)) {
+        QString linea = QString::number(nuevo.id) + ";" +
+                        nuevo.nombre + ";" +
+                        nuevo.categoria + ";" +
+                        nuevo.desarrollador + ";" +
+                        QString::number(nuevo.precio, 'f', 2) + ";" +
+                        QString::number(nuevo.anioPublicacion) + "\n";
+        file.write(linea.toUtf8());
+        file.close();
+    } else {
+        QMessageBox::critical(this, "Error", "No se pudo abrir el archivo para guardar");
+        return;
+    }
+    limpiarCampos();
+    QMessageBox::information(this, "Éxito", "Juego registrado correctamente");
+}
+
+
+/*
 #include<iostream>
 #include<vector>
 #include<string>
@@ -131,10 +224,10 @@ void registrarJuego(){
 	do{
 		cout<<"Anio de publicación: ";
 		cin>>nuevo.anioPublicacion;
-		if(nuevo.anioPublicacion < 1950 || nuevo.anioPublicacion > 2026){
-		    cout << "Ingresa un anio válido (1950 - 2026)"<<endl;
+		if(nuevo.anioPublicacion < 1997 || nuevo.anioPublicacion > 2026){
+		    cout << "Ingresa un anio válido (1997 - 2026)"<<endl;
 		}
-	}while(nuevo.anioPublicacion < 1950 || nuevo.anioPublicacion > 2026);
+	}while(nuevo.anioPublicacion < 1997 || nuevo.anioPublicacion > 2026);
 
 	cin.ignore();
 	guardarJuego(nuevo);
@@ -309,3 +402,4 @@ int main(){
     }while (opcion != 0);
     return 0;
 }
+*/
