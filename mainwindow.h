@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <vector>
+#include "Juego.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -17,7 +19,15 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+private slots:
+    void on_btnRegistrar_clicked();
+
 private:
     Ui::MainWindow *ui;
+    std::vector<Juego> juegos;
+    int generarNuevoID();
+    bool validarCampos();
+    void limpiarCampos();
 };
 #endif // MAINWINDOW_H
+
