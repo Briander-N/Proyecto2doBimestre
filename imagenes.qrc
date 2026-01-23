@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/img">
+        <file>imagenes/Actualizar.png</file>
+        <file>imagenes/Eliminar.png</file>
+        <file>imagenes/Logo.png</file>
+        <file>imagenes/Registrar.png</file>
+        <file>imagenes/Ver.png</file>
+    </qresource>
+</RCC>
