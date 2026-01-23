@@ -167,7 +167,7 @@ void MainWindow::on_btnVer_clicked()
         return;
     }
     ui->tableJuegos->setRowCount(0);
-    for(auto j : juegos){
+    for(const auto& j : juegos){
         int f = ui->tableJuegos->rowCount();
         ui->tableJuegos->insertRow(f);
         ui->tableJuegos->setItem(f, 0, new QTableWidgetItem(QString::number(j.id))); //Ya que no se aceptan int, solo strings, lo mismo para el resto de valores numericos
@@ -245,5 +245,78 @@ void MainWindow::on_btnActualizar_clicked()
     file.close();
     limpiarCampos();
     QMessageBox::information(this, "Éxito", "Juego actualizado correctamente");
+}
+
+
+
+void MainWindow::on_btnEliminar_clicked()
+{
+    bool ok;
+    int idBuscado = QInputDialog::getInt(
+        this,
+        "Eliminar juego",
+        "Ingrese el ID del juego a eliminar:",
+        1,
+        1,
+        1000,
+        1,
+        &ok
+        );
+
+    if (!ok) {
+        return;
+    }
+
+    std::vector<Juego> juegos = cargarJuegos();
+
+    if (juegos.empty()) {
+        QMessageBox::warning(this, "Error", "No hay juegos registrados");
+        return;
+    }
+
+    bool encontrado = false;
+
+    for (int i = 0; i < juegos.size(); i++) {
+        if (juegos[i].id == idBuscado) {
+            encontrado = true;
+
+            QMessageBox::information(this, "Eliminando",
+                                     QString("Eliminando el juego: %1").arg(juegos[i].nombre));
+
+            juegos.erase(juegos.begin() + i);
+            break;
+        }
+    }
+
+    if (!encontrado) {
+        QMessageBox::warning(this, "Error", "No se encontró un juego con ese ID");
+        return;
+    }
+
+    QFile file("juegosRegistro.txt");
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        QMessageBox::critical(this, "Error", "No se pudo abrir el archivo para guardar los cambios");
+        return;
+    }
+
+    QTextStream out(&file);
+    for (int i = 0; i < juegos.size(); i++) {
+        out << juegos[i].id << ";"
+            << juegos[i].nombre << ";"
+            << juegos[i].categoria << ";"
+            << juegos[i].desarrollador << ";"
+            << QString::number(juegos[i].precio, 'f', 2) << ";"
+            << juegos[i].anioPublicacion << "\n";
+    }
+
+    file.close();
+
+    if (ui->tableJuegos->rowCount() > 0) {
+        on_btnVer_clicked();
+    }
+
+    this->juegos = juegos;
+
+    QMessageBox::information(this, "Éxito", "Juego eliminado correctamente");
 }
 
