@@ -24,6 +24,10 @@ private slots:
 
     void on_btnVer_clicked();
 
+    void on_btnActualizar_clicked();
+
+    void on_btnEliminar_clicked();
+
 private:
     Ui::MainWindow *ui;
     std::vector<Juego> juegos;
