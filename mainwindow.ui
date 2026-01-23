@@ -225,12 +225,12 @@
     </column>
     <column>
      <property name="text">
-      <string>New Column</string>
+      <string>Nombre</string>
      </property>
     </column>
     <column>
      <property name="text">
-      <string>Nombre</string>
+      <string>Categoria</string>
      </property>
     </column>
     <column>
@@ -240,7 +240,7 @@
     </column>
     <column>
      <property name="text">
-      <string>Categoria</string>
+      <string>Precio</string>
      </property>
     </column>
     <column>
