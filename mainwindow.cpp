@@ -14,6 +14,8 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    this->setWindowTitle("Steam Manager");
+
     ui->dbBAnioPublicacion->setMinimum(1997);
     ui->dbBAnioPublicacion->setMaximum(2026);
     ui->dbBAnioPublicacion->setValue(2024);
@@ -157,6 +159,7 @@ void MainWindow::on_btnRegistrar_clicked()
         return;
     }
     limpiarCampos();
+    on_btnVer_clicked();
     QMessageBox::information(this, "Éxito", "Juego registrado correctamente");
 }
 
@@ -193,7 +196,7 @@ void MainWindow::on_btnActualizar_clicked()
         this,//con esto lo ligamos al ui principal
         "Actualizar juego",
         "Ingrese el ID del juego a actualizar:",
-        1,//Valor por defecto que aparece en el cudro
+        1,//Valor por defecto que aparece en el cuadro
         1,//Valor minimo que se pude ingresar
         1000,//Valor maximo que se puede ingresar
         1,//Valor de saltos que va a dar
@@ -248,6 +251,7 @@ void MainWindow::on_btnActualizar_clicked()
 
     file.close();
     limpiarCampos();
+    on_btnVer_clicked();
     QMessageBox::information(this, "Éxito", "Juego actualizado correctamente");
 }
 
