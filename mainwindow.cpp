@@ -61,8 +61,8 @@ std::vector<Juego>cargarJuegos(){
             Juego juegocargar;
             juegocargar.id = campos[0].toInt();
             juegocargar.nombre = campos[1];
-            juegocargar.desarrollador = campos[2];
-            juegocargar.categoria = campos[3];
+            juegocargar.categoria = campos[2];
+            juegocargar.desarrollador = campos[3];
             juegocargar.precio = campos[4].toDouble();
             juegocargar.anioPublicacion = campos[5].toInt();
 
@@ -74,9 +74,6 @@ std::vector<Juego>cargarJuegos(){
         QMessageBox::critical(nullptr, "Error", "No se pudo abrir el archivo"); //Se usa nullptr en lugar de this ya que es pura logica y no depende de la interfaz
         return juegos;
     }
-
-
-
 }
 
 
@@ -123,6 +120,12 @@ void MainWindow::limpiarCampos()
     ui->lnENombre->setFocus();
 }
 
+void MainWindow::limpiarTabla()
+{
+    ui->tableJuegos->setRowCount(0);
+    ui->tableJuegos->clearContents();
+}
+
 void MainWindow::on_btnRegistrar_clicked()
 {
     if (!validarCampos()) {
@@ -160,6 +163,7 @@ void MainWindow::on_btnRegistrar_clicked()
 
 void MainWindow::on_btnVer_clicked()
 {
+    limpiarTabla();
     std::vector<Juego>juegos = cargarJuegos();
 
     if (juegos.empty()){

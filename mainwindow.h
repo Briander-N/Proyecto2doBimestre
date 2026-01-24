@@ -34,5 +34,6 @@ private:
     int generarNuevoID();
     bool validarCampos();
     void limpiarCampos();
+    void limpiarTabla();
 };
 #endif // MAINWINDOW_H
