@@ -15,11 +15,6 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     ui->tableJuegos->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-
-
-    ui->dbBAnioPublicacion->setMinimum(1997);
-    ui->dbBAnioPublicacion->setMaximum(2026);
-    ui->dbBAnioPublicacion->setValue(2024);
 }
 
 MainWindow::~MainWindow()
@@ -126,7 +121,6 @@ void MainWindow::limpiarCampos()
 void MainWindow::limpiarTabla()
 {
     ui->tableJuegos->setRowCount(0);
-    ui->tableJuegos->clearContents();
 }
 
 void MainWindow::on_btnRegistrar_clicked()

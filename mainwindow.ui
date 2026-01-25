@@ -800,7 +800,7 @@ border: none;</string>
      <number>0</number>
     </property>
     <property name="minimum">
-     <double>1950.000000000000000</double>
+     <double>1997.000000000000000</double>
     </property>
     <property name="maximum">
      <double>2026.000000000000000</double>
@@ -809,7 +809,7 @@ border: none;</string>
      <enum>QAbstractSpinBox::StepType::DefaultStepType</enum>
     </property>
     <property name="value">
-     <double>2026.000000000000000</double>
+     <double>2024.000000000000000</double>
     </property>
    </widget>
    <widget class="QLabel" name="label_6">
