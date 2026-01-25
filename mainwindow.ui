@@ -102,7 +102,7 @@
    </palette>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Steam Manager</string>
   </property>
   <property name="styleSheet">
    <string notr="true">background-color: rgb(16, 23, 34);</string>
@@ -1055,12 +1055,12 @@ border: none;</string>
     </column>
     <column>
      <property name="text">
-      <string>Categoria</string>
+      <string>Desarrollador</string>
      </property>
     </column>
     <column>
      <property name="text">
-      <string>Desarrollador</string>
+      <string>Categoria</string>
      </property>
     </column>
     <column>

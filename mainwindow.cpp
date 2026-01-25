@@ -14,7 +14,8 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    this->setWindowTitle("Steam Manager");
+    ui->tableJuegos->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+
 
     ui->dbBAnioPublicacion->setMinimum(1997);
     ui->dbBAnioPublicacion->setMaximum(2026);
@@ -167,7 +168,7 @@ void MainWindow::on_btnRegistrar_clicked()
 void MainWindow::on_btnVer_clicked()
 {
     limpiarTabla();
-    std::vector<Juego>juegos = cargarJuegos();
+    juegos = cargarJuegos();
 
     if (juegos.empty()){
         QMessageBox::warning(this, "Error", "No hay juegos registrados!");
@@ -207,7 +208,7 @@ void MainWindow::on_btnActualizar_clicked()
         return;
     }
 
-    std::vector<Juego> juegos = cargarJuegos();
+    juegos = cargarJuegos();
     bool encontrado = false;
 
     for (auto &j : juegos) {
@@ -275,7 +276,7 @@ void MainWindow::on_btnEliminar_clicked()
         return;
     }
 
-    std::vector<Juego> juegos = cargarJuegos();
+    juegos = cargarJuegos();
 
     if (juegos.empty()) {
         QMessageBox::warning(this, "Error", "No hay juegos registrados");
@@ -322,8 +323,6 @@ void MainWindow::on_btnEliminar_clicked()
     if (ui->tableJuegos->rowCount() > 0) {
         on_btnVer_clicked();
     }
-
-    this->juegos = juegos;
 
     QMessageBox::information(this, "Éxito", "Juego eliminado correctamente");
 }
