@@ -104,6 +104,10 @@
   <property name="windowTitle">
    <string>Steam Manager</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>imagenes/icon.ico</normaloff>imagenes/icon.ico</iconset>
+  </property>
   <property name="styleSheet">
    <string notr="true">background-color: rgb(16, 23, 34);</string>
   </property>
@@ -834,9 +838,9 @@ border: none;</string>
    <widget class="QTableWidget" name="tableJuegos">
     <property name="geometry">
      <rect>
-      <x>70</x>
+      <x>180</x>
       <y>300</y>
-      <width>601</width>
+      <width>391</width>
       <height>192</height>
      </rect>
     </property>

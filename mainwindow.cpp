@@ -46,10 +46,10 @@ std::vector<Juego>cargarJuegos(){
     std::vector<Juego> juegos;
     QFile file("juegosRegistro.txt");
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)){
-        QTextStream in(&file); //Permite leer y escribir archivos QString, QFile y asi pos...xd
-        while (!in.atEnd()) { //Esto lee hasta que se acabe el archivo
-            QString linea = in.readLine(); //Lee una linea del archivo, osea como en python masomenos
-            QStringList campos = linea.split(";"); //Es como un vector de QStrings
+        QTextStream in(&file);
+        while (!in.atEnd()) {
+            QString linea = in.readLine();
+            QStringList campos = linea.split(";");
 
 
 
@@ -74,27 +74,47 @@ std::vector<Juego>cargarJuegos(){
     }
 }
 
+bool contieneSoloNumeros(const QString &texto)
+{
+    bool ok;
+    texto.toDouble(&ok);
+    return ok;
+}
+
 
 bool MainWindow::validarCampos()
 {
-    if (ui->lnENombre->text().isEmpty()) {
-        QMessageBox::warning(this, "Error", "El nombre no puede estar vacío");
+    QString nombre = ui->lnENombre->text().trimmed(); //trimmed quita espacios en blanco al inicio y al final del texto
+    QString desarrollador = ui->lnEDesarrollador->text().trimmed();
+    QString categoria = ui->lnECategoria->text().trimmed();
+    bool ok;
+    double precio = ui->lnEPrecio->text().toDouble(&ok);
+
+    if (nombre.isEmpty() || contieneSoloNumeros(nombre)) {
+        QMessageBox::warning(this, "Error", "El nombre no puede estar vacío ni ser solo números");
         ui->lnENombre->setFocus();
         return false;
     }
-    if (ui->lnEDesarrollador->text().isEmpty()) {
-        QMessageBox::warning(this, "Error", "El Desarrollador no puede estar vacío");
+
+    if (desarrollador.isEmpty() || contieneSoloNumeros(desarrollador)) {
+        QMessageBox::warning(this, "Error", "El desarrollador no puede estar vacío ni ser solo números");
         ui->lnEDesarrollador->setFocus();
         return false;
     }
-    if (ui->lnECategoria->text().isEmpty()) {
-        QMessageBox::warning(this, "Error", "La categoría no puede estar vacía");
+
+    if (categoria.isEmpty() || contieneSoloNumeros(categoria)) {
+        QMessageBox::warning(this, "Error", "La categoría no puede estar vacía ni ser solo números");
         ui->lnECategoria->setFocus();
         return false;
     }
 
     if (ui->lnEPrecio->text().toFloat() < 0 || ui->lnEPrecio->text().isEmpty()) {
         QMessageBox::warning(this, "Error", "El precio no puede ser negativo o estar vacío");
+        ui->lnEPrecio->setFocus();
+        return false;
+    }
+    if (!ok) {
+        QMessageBox::warning(this, "Error", "El precio debe ser un número válido");
         ui->lnEPrecio->setFocus();
         return false;
     }
